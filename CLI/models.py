@@ -16,38 +16,38 @@ class Model(nn.Module):
         if re.match(r"^vgg$", self.model_name, re.IGNORECASE):
             if re.match(r"^full$", self.mode, re.IGNORECASE):
                 self.model = models.vgg16_bn(pretrained=False, progress=True)
-                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=11)
+                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=1)
             elif re.match(r"^semi$", self.mode, re.IGNORECASE) or re.match(r"^final$", self.mode, re.IGNORECASE):
                 self.model = models.vgg16_bn(pretrained=True, progress=True)
                 self.freeze()
-                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=11)
+                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=1)
             
         elif re.match(r"^resnet$", self.model_name, re.IGNORECASE):
             if re.match(r"^full$", self.mode, re.IGNORECASE):
                 self.model = models.resnet50(pretrained=False, progress=True)
-                self.model.fc = nn.Linear(in_features=self.model.fc.in_features, out_features=11)
+                self.model.fc = nn.Linear(in_features=self.model.fc.in_features, out_features=1)
             elif re.match(r"^semi$", self.mode, re.IGNORECASE) or re.match(r"^final$", self.mode, re.IGNORECASE):
                 self.model = models.resnet50(pretrained=True, progress=True)
                 self.freeze()
-                self.model.fc = nn.Linear(in_features=self.model.fc.in_features, out_features=11)
+                self.model.fc = nn.Linear(in_features=self.model.fc.in_features, out_features=1)
         
         elif re.match(r"^densenet$", self.model_name, re.IGNORECASE):
             if re.match(r"^full$", self.mode, re.IGNORECASE):
                 self.model = models.densenet169(pretrained=False, progress=True)
-                self.model.classifier = nn.Linear(in_features=self.model.classifier.in_features, out_features=11)
+                self.model.classifier = nn.Linear(in_features=self.model.classifier.in_features, out_features=1)
             elif re.match(r"^semi$", self.mode, re.IGNORECASE) or re.match(r"^final$", self.mode, re.IGNORECASE):
                 self.model = models.densenet169(pretrained=False, progress=True)
                 self.freeze()
-                self.model.classifier = nn.Linear(in_features=self.model.classifier.in_features, out_features=11)
+                self.model.classifier = nn.Linear(in_features=self.model.classifier.in_features, out_features=1)
         
         elif re.match(r"^mobilenet$", self.model_name, re.IGNORECASE):
             if re.match(r"^full$", self.mode, re.IGNORECASE):
                 self.model = models.mobilenet_v3_small(pretrained=False, progress=True)
-                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=11)
+                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=1)
             elif re.match(r"^semi$", self.mode, re.IGNORECASE) or re.match(r"^final$", self.mode, re.IGNORECASE):
                 self.model = models.mobilenet_v3_small(pretrained=False, progress=True)
                 self.freeze()
-                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=11)
+                self.model.classifier[-1] = nn.Linear(in_features=self.model.classifier[-1].in_features, out_features=1)
 
     def freeze(self):
         for params in self.parameters():
@@ -85,7 +85,7 @@ class Model(nn.Module):
         return optim.lr_scheduler.ReduceLROnPlateau(optimizer=optimizer, patience=patience, eps=eps, verbose=True)
 
     def forward(self, x):
-        return nn.LogSoftmax(dim=1)(self.model(x))
+        return nn.Sigmoid()(self.model(x))
 
 
 def get_model(seed: int, mode: str, model_name: str):
