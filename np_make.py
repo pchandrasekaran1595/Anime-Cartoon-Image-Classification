@@ -19,15 +19,19 @@ def reserve_memory(path: str, size: int) -> tuple:
 def main() -> None:
     args_1: tuple = ("--path", "-p")
     args_2: tuple = ("--size", "-s")
+    args_3: tuple = ("--kaggle", "-k")
 
     path: str = "data"
     size: int = 320
+    kaggle = False
 
     if args_1[0] in sys.argv: path = sys.argv[sys.argv.index(args_1[0]) + 1]
     if args_1[1] in sys.argv: path = sys.argv[sys.argv.index(args_1[1]) + 1]
 
     if args_2[0] in sys.argv: size = int(sys.argv[sys.argv.index(args_2[0]) + 1])
     if args_2[1] in sys.argv: size = int(sys.argv[sys.argv.index(args_2[1]) + 1])
+
+    if args_3[0] in sys.argv or args_3[1] in sys.argv: kaggle = True
 
     assert os.path.exists(path), "Please Unzip the data first using python unzip.py"
 
@@ -50,8 +54,12 @@ def main() -> None:
                 i += 1
         j += 1
 
-    np.save(path + "/images.npy", images)
-    np.save(path + "/labels.npy", labels)
+    if kaggle:
+        np.save("./images.npy", images)
+        np.save("./labels.npy", labels)
+    else:
+        np.save(path + "/images.npy", images)
+        np.save(path + "/labels.npy", labels)
 
     breaker()
     print("Saving Complete")
