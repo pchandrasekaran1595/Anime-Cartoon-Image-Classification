@@ -53,8 +53,8 @@ def breaker(num: int = 50, char: str = "*") -> None:
 def load_data(path: str) -> tuple:
     assert "images.npy" in os.listdir(path) and "labels.npy" in os.listdir(path), "Please run python np_make.py"
 
-    images = np.load(path + "/images.npy")
-    labels = np.load(path + "/labels.npy")
+    images = np.load(os.path.join(path, "images.npy"))
+    labels = np.load(os.path.join(path, "images.npy"))
 
     return images, labels
 
@@ -117,8 +117,32 @@ def save_graphs(L: list, A: list) -> None:
     plt.legend()
     plt.grid()
     plt.title("Accuracy Graph")
-    plt.savefig(SAVE_PATH + "/Graphs.jpg")
+    plt.savefig(os.path.join(SAVE_PATH, "Graphs.jpg"))
     plt.close("Plots")
+
+
+def show_graphs(L: list, A: list) -> None:
+    TL, VL, TA, VA = [], [], [], []
+    for i in range(len(L)):
+        TL.append(L[i]["train"])
+        VL.append(L[i]["valid"])
+        TA.append(A[i]["train"])
+        VA.append(A[i]["valid"])
+    x_Axis = np.arange(1, len(TL) + 1)
+    plt.figure(figsize=(12, 8))
+    plt.subplot(1, 2, 1)
+    plt.plot(x_Axis, TL, "r", label="Train")
+    plt.plot(x_Axis, VL, "b", label="Valid")
+    plt.legend()
+    plt.grid()
+    plt.title("Loss Graph")
+    plt.subplot(1, 2, 2)
+    plt.plot(x_Axis, TA, "r", label="Train")
+    plt.plot(x_Axis, VA, "b", label="Valid")
+    plt.legend()
+    plt.grid()
+    plt.title("Accuracy Graph")
+    plt.show()
 
 
 def fit(model=None, optimizer=None, scheduler=None, epochs=None, early_stopping_patience=None, 
@@ -139,7 +163,7 @@ def fit(model=None, optimizer=None, scheduler=None, epochs=None, early_stopping_
 
     bestLoss, bestAccs = {"train" : np.inf, "valid" : np.inf}, {"train" : 0.0, "valid" : 0.0}
     Losses, Accuracies = [], []
-    name = "/state.pt"
+    name = "state.pt"
 
     start_time = time()
     for e in range(epochs):
@@ -177,7 +201,7 @@ def fit(model=None, optimizer=None, scheduler=None, epochs=None, early_stopping_
                 BLE = e + 1
                 torch.save({"model_state_dict": model.state_dict(),
                             "optim_state_dict": optimizer.state_dict()},
-                           SAVE_PATH + name)
+                           os.path.join(SAVE_PATH, name))
                 early_stopping_step = 0
             else:
                 early_stopping_step += 1
@@ -190,7 +214,7 @@ def fit(model=None, optimizer=None, scheduler=None, epochs=None, early_stopping_
             BLE = e + 1
             torch.save({"model_state_dict" : model.state_dict(),
                         "optim_state_dict" : optimizer.state_dict()},
-                        SAVE_PATH + name)
+                        os.path.join(SAVE_PATH, name))
         
         if epochAccs["valid"] > bestAccs["valid"]:
             bestAccs = epochAccs

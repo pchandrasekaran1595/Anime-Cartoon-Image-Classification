@@ -47,9 +47,9 @@ def main() -> None:
     print("Saving Images to Numpy Arrays ...")
 
     for folder_name_1 in os.listdir(path):
-        for folder_name_2 in os.listdir(path + "/" + folder_name_1):
-            for filename in os.listdir(path + "/" + folder_name_1 + "/" + folder_name_2):
-                images[i] = cv2.resize(src=cv2.cvtColor(src=cv2.imread(path + "/" + folder_name_1 + "/" + folder_name_2 + "/" + filename, cv2.IMREAD_COLOR), code=cv2.COLOR_BGR2RGB), dsize=(size, size), interpolation=cv2.INTER_AREA)
+        for folder_name_2 in os.listdir(os.path.join(path, folder_name_1)):
+            for filename in os.listdir(os.path.join(os.path.join(path, folder_name_1), folder_name_2)):
+                images[i] = cv2.resize(src=cv2.cvtColor(src=cv2.imread(os.path.join(os.path.join(os.path.join(path, folder_name_1), folder_name_2), filename), cv2.IMREAD_COLOR), code=cv2.COLOR_BGR2RGB), dsize=(size, size), interpolation=cv2.INTER_AREA)
                 labels[i] = labels[i] * j
                 i += 1
         j += 1
@@ -58,8 +58,8 @@ def main() -> None:
         np.save("./images.npy", images)
         np.save("./labels.npy", labels)
     else:
-        np.save(path + "/images.npy", images)
-        np.save(path + "/labels.npy", labels)
+        np.save(os.path.join(path, "images.npy"), images)
+        np.save(os,path.join(path, "labels.npy"), labels)
 
     breaker()
     print("Saving Complete")

@@ -1,6 +1,6 @@
 import sys
 
-from .utils import breaker, prepare_train_and_valid_dataloaders, fit, predict, save_graphs
+from .utils import breaker, prepare_train_and_valid_dataloaders, fit, predict, save_graphs, show_graphs
 from .models import get_model
 
 
@@ -19,6 +19,7 @@ def run():
     args_11: str  = "--augment" 
     args_12: str  = "--patience-eps"
     args_13: str  = "--test"
+    args_14: tuple = ("--kaggle", "-k")
 
     path: str = "data"
     seed: int = 0
@@ -36,6 +37,7 @@ def run():
     augment: bool = False
     test: bool = False
     name: str = None
+    kaggle: bool = False
 
     if args_1[0] in sys.argv: path = sys.argv[sys.argv.index(args_1[0]) + 1]
     if args_1[1] in sys.argv: path = sys.argv[sys.argv.index(args_1[1]) + 1]
@@ -76,6 +78,8 @@ def run():
     if args_13 in sys.argv: 
         test = True
         name = sys.argv[sys.argv.index(args_13) + 1]
+    
+    if args_14[0] in sys.argv or args_14[1] in sys.argv: kaggle = True
 
     breaker()
     print("Building Model ...")
@@ -96,13 +100,17 @@ def run():
         L, A, _, _, _ = fit(model=model, optimizer=optimizer, scheduler=scheduler, 
                             epochs=epochs, early_stopping_patience=early_stopping, 
                             dataloaders=dataloaders, verbose=True)
-        save_graphs(L, A)
+        
+        if kaggle:
+            show_graphs(L, A)
+        else:
+            save_graphs(L, A)
 
     else:
         assert name is not None, "Enter an Image Name"
 
         label = predict(model, mode, path + "/test/" + name, size)
-
+        
         breaker()
         print(f"Label : {label}")
         breaker()
