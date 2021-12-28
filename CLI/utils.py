@@ -54,7 +54,7 @@ def load_data(path: str) -> tuple:
     assert "images.npy" in os.listdir(path) and "labels.npy" in os.listdir(path), "Please run python np_make.py"
 
     images = np.load(os.path.join(path, "images.npy"))
-    labels = np.load(os.path.join(path, "images.npy"))
+    labels = np.load(os.path.join(path, "labels.npy"))
 
     return images, labels
 
