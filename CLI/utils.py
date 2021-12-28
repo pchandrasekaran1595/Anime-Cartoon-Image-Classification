@@ -1,4 +1,3 @@
-
 import os
 import re
 import cv2
@@ -18,7 +17,7 @@ from sklearn.model_selection import KFold
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 TRANSFORM_FINAL = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-TRANSFORM = transforms.Compose([transforms.ToTensor(), transforms.Normalize([______,  _____, _____], [_____, _____, _____])])
+TRANSFORM = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.68999, 0.67253, 0.65927], [0.34386, 0.34976, 0.35475])])
 
 SAVE_PATH = "saves"
 if not os.path.exists(SAVE_PATH):
@@ -127,6 +126,10 @@ def fit(model=None, optimizer=None, scheduler=None, epochs=None, early_stopping_
     
     def get_accuracy(y_pred, y_true):
         y_pred = torch.sigmoid(y_pred)
+
+        y_pred[y_pred > 0.5] = 1
+        y_pred[y_pred <= 0.5] = 0
+
         return torch.count_nonzero(y_pred == y_true).item() / len(y_pred)
     
     if verbose:

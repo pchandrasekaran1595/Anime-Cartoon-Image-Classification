@@ -85,7 +85,7 @@ def run():
         breaker()
         print("Preparing Dataloaders ...")
 
-        dataloaders = prepare_train_and_valid_dataloaders(path, mode, batch_size, seed)
+        dataloaders = prepare_train_and_valid_dataloaders(path, mode, batch_size, seed, augment)
 
         optimizer = model.get_optimizer(lr, wd)
         if use_scheduler:
