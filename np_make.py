@@ -9,8 +9,8 @@ from CLI.utils import breaker
 def reserve_memory(path: str, size: int) -> tuple:
     total_num_files: int = 0
     for name_1 in os.listdir(path):
-        for name_2 in os.listdir(path + "/" + name_1):
-            total_num_files += len(os.listdir(path + "/" + name_1 + "/" + name_2))
+        for name_2 in os.listdir(os.path.join(path, name_1)):
+            total_num_files += len(os.listdir(os.path.join(os.path.join(path, name_1), name_2)))
     images = np.zeros((total_num_files, size, size, 3), dtype=np.uint8)
     labels = np.ones((total_num_files, 1), dtype=np.uint8)
     return images, labels
