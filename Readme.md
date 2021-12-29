@@ -28,7 +28,7 @@
 9. --weight-decay | -wd   : Weight Decay (Default: 0.0)
 10. --size                : Image Size (Use same value as when running np_make.py)
 11. --augment             : Flag to augment the training images
-12. --patience-eps        : Plateau Scheduler arguments (Expects as <patience> <eps>)
-13. --test                : Flag to enter testing mode (Must be followed up by an image name as <image_name.ext>)
+12. --patience-eps        : Plateau Scheduler arguments (Expects as 'patience' 'eps')
+13. --test                : Flag to enter testing mode (Must be followed up by an image name as 'image_name.ext')
 14. --kaggle | -k         : Enables scripts to work within a kaggle notebook
 </pre>
