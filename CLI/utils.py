@@ -254,8 +254,13 @@ def predict(model=None, mode: str = None, image_path: str = None, size: int = 32
 
     with torch.no_grad():
         if re.match(r"^full$", mode, re.IGNORECASE) or re.match(r"^semi$", mode, re.IGNORECASE):
-            output = torch.argmax(model(TRANSFORM(image).to(DEVICE).unsqueeze(dim=0)), dim=1)
+            output = torch.sigmoid(model(TRANSFORM(image).to(DEVICE).unsqueeze(dim=0)))
         else:
-            output = torch.argmax(model(TRANSFORM_FINAL(image).to(DEVICE).unsqueeze(dim=0)), dim=1)
+            output = torch.sigmoid(model(TRANSFORM_FINAL(image).to(DEVICE).unsqueeze(dim=0)), dim=1)
     
-    return labels[str(output.item())].title()
+    if output.item() > 0.5:
+        output = 1
+    else:
+        output = 0
+    
+    return labels[str(output)].title()
